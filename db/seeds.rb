@@ -15,9 +15,9 @@ user4 = User.create name: "Amanda", email: "amanda@example.com", password: "test
 
 puts "Creating shifts..."
 
-shift1 = Shift.create user_id: user1.id, start: Time.now, end: Time.now, break_length: 10
-shift2 = Shift.create user_id: user1.id, start: Time.now, end: Time.now, break_length: 10
-shift3 = Shift.create user_id: user1.id, start: Time.now, end: Time.now, break_length: 10
+shift1 = Shift.create user_id: user1.id, start: Time.now, end: Time.now + 1000000, break_length: 10
+shift2 = Shift.create user_id: user1.id, start: Time.now, end: Time.now + 10000, break_length: 10
+shift3 = Shift.create user_id: user1.id, start: Time.now, end: Time.now + 50000, break_length: 10
 
 shift4 = Shift.create user_id: user2.id, start: Time.now, end: Time.now, break_length: 10
 shift5 = Shift.create user_id: user2.id, start: Time.now, end: Time.now, break_length: 10
