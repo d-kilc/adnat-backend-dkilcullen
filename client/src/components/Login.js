@@ -22,9 +22,9 @@ export default function Login({handleSetUser}) {
         .then(res => res.json())
         .then(handleSetUser)
         .then(() => setLoggedIn(true))
+        .catch(() => alert('There was a problem logging in.'))
     }
 
-    
     if (loggedIn) return <Navigate replace to="/"/> 
 
     return (

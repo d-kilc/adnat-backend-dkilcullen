@@ -7,11 +7,10 @@ org3 = Organisation.create name: "Good Burger", hourly_rate: 9.50
 
 puts "Creating users..."
 
-user1 = User.create name: "Jane", email: "jane@example.com", password: "test", organisation_id: org1.id
-user2 = User.create name: "Bill", email: "bill@example.com", password: "test", organisation_id: org2.id
-user3 = User.create name: "Dan", email: "dan@example.com", password: "test"
-user4 = User.create name: "Amanda", email: "amanda@example.com", password: "test", organisation_id: org3.id
-
+user1 = User.create name: "Jane", email: "jane@example.com", password: "testttt", organisation_id: org1.id
+user2 = User.create name: "Bill", email: "bill@example.com", password: "testttt", organisation_id: org2.id
+user3 = User.create name: "Dan", email: "dan@example.com", password: "testttt"
+user4 = User.create name: "Amanda", email: "amanda@example.com", password: "testttt", organisation_id: org3.id
 
 puts "Creating shifts..."
 

@@ -20,5 +20,6 @@ Rails.application.routes.draw do
   # user joining an organisation
   # user leaving an organisation
   patch '/users/:id', to: 'users#update' 
+  patch '/password-reset', to: 'users#password_reset'
 
 end

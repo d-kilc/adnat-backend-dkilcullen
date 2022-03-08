@@ -7,6 +7,7 @@ import Home from './components/Home'
 import Login from './components/Login'
 import Shifts from './components/Shifts'
 import Edit from './components/Edit'
+import ForgotPassword from './components/ForgotPassword'
 
 function App() {
 
@@ -33,6 +34,16 @@ function App() {
         res.json().then(setUser)
       }
     })
+  }
+
+  function handlePasswordReset(object) {
+    fetch('/password-reset', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json'},
+      body: JSON.stringify(object)
+    })
+    .then(res => res.json())
+    .then(setUser)
   }
 
   function handleCreateOrganisation(org) {
@@ -139,7 +150,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={ <Login handleSetUser={setUser}/> }/>
-        <Route path="/signup" element={ <Signup handleSetUser={setUser} /> }/>
+        <Route path="/signup" element={ <Signup handleSetUser={setUser}/> }/>
+        <Route path="/forgot-password" element={ <ForgotPassword handlePasswordReset={handlePasswordReset} handleSetUser={setUser}/> }/>
         <Route path="/edit" element={ <Edit handleSaveOrganisation={handleSaveOrganisation} handleDeleteOrganisation={handleDeleteOrganisation}/>} />
         <Route path="/shifts" element={ <Shifts user={user} handlePostShift={handlePostShift}/> }/> 
         <Route exact path="/" element={<Home user={user} handleLogOut={handleLogOut} handleCreateOrganisation={handleCreateOrganisation} handleJoinOrganisation={handleJoinOrganisation}

@@ -58,7 +58,7 @@ export default function Shifts({ user, handlePostShift }) {
                 </thead>
                 <tbody>
 
-                {shifts.map(shift => {
+                {user.organisation && shifts.map(shift => {
                     const shiftStart = new Date(shift.start)
                     const shiftEnd = new Date(shift.end)
     

@@ -5,6 +5,7 @@ skip_before_action :verify_authenticity_token
 
     def create
         user = User.create! user_params
+        session[:user_id] ||= user.id
         render json: user, status: 201
     end
 
@@ -24,10 +25,17 @@ skip_before_action :verify_authenticity_token
         render json: user, status: 200
     end
 
+    def password_reset
+        user = User.find_by email: params[:email]
+        user_id = user.id
+        user.update! user_params
+        render json: user, status: 200
+    end
+
     private
 
     def user_params
-        params.permit :name, :email, :organisation_id, :password, :password_confirmation
+        params.permit :name, :email, :organisation_id, :password, :password_confirmation, :old_password
     end
 
     def record_not_found
