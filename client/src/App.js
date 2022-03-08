@@ -28,7 +28,7 @@ function App() {
     fetch('/logout', { method: 'DELETE' })
     .then(res => {
       if (res.ok) {
-        setUser()
+        res.json().then(setUser)
       }
     })
   }
@@ -41,6 +41,8 @@ function App() {
     })
     .then(res => res.json())
     .then(handleJoinOrganisation)
+    .catch(err => alert(`There was a problem creating the organisation: ${err}`))
+
   }
 
   function handleJoinOrganisation(org) {
@@ -51,12 +53,12 @@ function App() {
       headers: { "Content-Type": "application/json", accept: 'application/json'},
       body: JSON.stringify({organisation_id: org.id})
     })
-    .then(res => res.json())
-    .then(console.log)
+    .then(() => alert('Organisation joined successfully.'))
+    .catch(err => alert(`There was a problem joining the organisation: ${err}`))
   }
 
   function handleLeaveOrganisation() {
-    setUser({...user, organisation: null})
+    setUser({...user, organisation: null, shifts: []})
     fetch(`/users/${user.id}`, {
       method: 'PATCH',
       headers: { "Content-Type": "application/json", accept: 'application/json'},
@@ -66,7 +68,14 @@ function App() {
       if (res.ok) {
         alert('Success! You\'re no longer a part of the organisation.')
       }
+      else {
+        alert('There was a problem leaving the organisation.')
+      }
     })
+  }
+
+  function handleDeleteShifts() {
+    fetch(`/shifts/`)
   }
 
   function handleSaveOrganisation(org) {

@@ -15,6 +15,12 @@ skip_before_action :verify_authenticity_token
         # and join?
     end
 
+    def show
+        org_id = params[:id]
+        org = Organisation.find org_id
+        render json: org, status: 200
+    end
+
     def update
         org_id = params[:id]
         org = Organisation.find org_id

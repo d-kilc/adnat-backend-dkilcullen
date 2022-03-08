@@ -1,14 +1,19 @@
 Rails.application.routes.draw do
+  
+  # TO DO: remove unneccessary routes
+  post '/login', to: 'sessions#create'
+  delete '/logout', to: 'sessions#destroy'
+  get '/me', to: 'users#show'
+
   resources :shifts
-  resources :users
   resources :organisations, only: [:index, :create, :update, :destroy]
   resources :organisations do
     resources :shifts, only: [:index]
   end
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-  # Defines the root path route ("/")
-  # root "articles#index"
+  resources :users do
+    resources :shifts, only: [:destroy]
+  end
 
   #signup
   post '/users', to: 'users#create'
@@ -16,9 +21,4 @@ Rails.application.routes.draw do
   # user leaving an organisation
   patch '/users/:id', to: 'users#update' 
 
-  post '/login', to: 'sessions#create'
-  delete '/logout', to: 'sessions#destroy'
-
-  get '/me', to: 'users#show'
-  # get '/users/:id', to: 'users#show'
 end

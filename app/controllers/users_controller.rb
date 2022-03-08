@@ -18,6 +18,9 @@ skip_before_action :verify_authenticity_token
         user_id = params[:id]
         user = User.find user_id
         user.update! user_params
+        if ( user_params.key? :organisation_id ) && ( user_params[:organisation_id] == nil )
+            Shift.delete user.shifts
+        end
         render json: user, status: 200
     end
 

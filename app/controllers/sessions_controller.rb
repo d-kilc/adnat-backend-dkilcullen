@@ -14,7 +14,7 @@ class SessionsController < ApplicationController
 
     def destroy
         session.delete :user_id
-        head :no_content
+        render json: {name: "unauthorized"}, status: 200
     end
 
 end
