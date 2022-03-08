@@ -1,18 +1,17 @@
 import { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
-export default function Shifts({ user }) {
+export default function Shifts({ user, handlePostShift }) {
 
     const { state } = useLocation()
     const [shifts, setShifts] = useState()
     const [newShift, setNewShift] = useState({
-        start: new Date(), 
-        end: new Date(), 
-        break_length: 0,
+        date: new Date(),
+        startTime: '', 
+        endTime: '', 
+        breakLength: 0,
         user_id: 0,
     })
-    console.log(state)
-    console.log(newShift)
 
     useEffect(() => {
         fetch(`/organisations/${state.organisation_id}`)
@@ -22,8 +21,9 @@ export default function Shifts({ user }) {
                 .then(data => setShifts(data.shifts))
             }
         })
-    }, [])
-    console.log(shifts)
+    }, [user])
+    
+    console.log(user)
 
     useEffect(() => {
         if (user) setNewShift({...newShift, user_id: user.id})
@@ -33,18 +33,11 @@ export default function Shifts({ user }) {
         if (e.target.name === 'date') {
             setNewShift({
                 ...newShift,
-                start: new Date( e.target.value ),
-                end: new Date( e.target.value ),             
-            })
-        } else if (e.target.name in ['start','end']) {
-            setNewShift({
-                ...newShift,
-                [e.target.name]: newShift[e.target.name].setTime(e.target.value),
-            })            
+                date: new Date( e.target.value ),
+            })        
         } else {
             setNewShift({...newShift, [e.target.name]: e.target.value})
-        }
-        
+        }    
     }
 
     if (shifts && user) {
@@ -64,13 +57,13 @@ export default function Shifts({ user }) {
                     </tr>
                 </thead>
                 <tbody>
+
                 {shifts.map(shift => {
                     const shiftStart = new Date(shift.start)
                     const shiftEnd = new Date(shift.end)
     
                     const hoursWorked = ((shiftEnd - shiftStart)/3600000 - (shift.break_length / 60)).toFixed(2)
                     const shiftCost = `$${(hoursWorked * user.organisation.hourly_rate).toFixed(2)}`
-    
     
                     return (
                         <tr>
@@ -86,12 +79,12 @@ export default function Shifts({ user }) {
                 })}
                 <tr>
                     <td>{user && user.name}</td>
-                    <td><input type="date" name="date" value={newShift.start.toLocaleDateString('en-GB').split('/').reverse().join('-')} onChange={handleUpdateNewShift}/></td>
-                    <td><input type="time" name="start" value={`${newShift.start.getHours()}:${newShift.start.getMinutes()}`} onChange={handleUpdateNewShift}/></td>
-                    <td><input type="time" name="end" value={newShift.end.getTime()} onChange={handleUpdateNewShift}/></td>
-                    <td><input type="number" name="break_length" value={newShift.break_length} onChange={handleUpdateNewShift}/></td>
+                    <td><input type="date" name="date" value={newShift.date.toLocaleDateString('en-GB').split('/').reverse().join('-')} onChange={handleUpdateNewShift}/></td>
+                    <td><input type="time" name="startTime" value={newShift.startTime} onChange={handleUpdateNewShift}/></td>
+                    <td><input type="time" name="endTime" value={newShift.endTime} onChange={handleUpdateNewShift}/></td>
+                    <td><input type="number" name="breakLength" value={newShift.breakLength} onChange={handleUpdateNewShift}/></td>
                     <td colSpan="2">
-                        <button>Create shift</button>
+                        <button onClick={() => handlePostShift(newShift)}>Create shift</button>
                     </td>
                     <td></td>
                 </tr>

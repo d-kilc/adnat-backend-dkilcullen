@@ -12,7 +12,9 @@ function App() {
 
   const [user, setUser] = useState()
 
-  useEffect( () => {
+  useEffect(currentUser, [])
+
+  function currentUser() {
     fetch('/me')
     .then((r) => { 
       if (r.ok) {
@@ -22,7 +24,7 @@ function App() {
         setUser({name: 'unauthorized'})
       }
     })
-  }, [])
+  }
 
   function handleLogOut() {
     fetch('/logout', { method: 'DELETE' })
@@ -74,10 +76,6 @@ function App() {
     })
   }
 
-  function handleDeleteShifts() {
-    fetch(`/shifts/`)
-  }
-
   function handleSaveOrganisation(org) {
     fetch(`/organisations/${org.id}`, { 
         method: 'PATCH',
@@ -108,13 +106,42 @@ function App() {
     })
   }
 
+  function handlePostShift(newShift) {
+    
+    if (!newShift.date || !newShift.breakLength || newShift.startTime === '' || newShift.endTime === '' ) {
+      return alert('Please fill out all fields.')
+    } else {
+
+      const formattedShift = {
+        start: new Date( newShift.date ),
+        end: new Date( newShift.date ),
+        break_length: parseInt(newShift.breakLength),
+        user_id: parseInt(newShift.user_id),
+      }
+
+      formattedShift.start.setHours(newShift.startTime[0,1])
+      formattedShift.start.setMinutes(newShift.startTime[3,4])
+      formattedShift.end.setHours(newShift.endTime[0,1])
+      formattedShift.end.setMinutes(newShift.endTime[3,4])
+
+      fetch('/shifts', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json", Accept: "application/json"},
+        body: JSON.stringify(formattedShift)
+      })
+      // .then(res => res.json())
+      .then(() => currentUser())
+      .catch(err => alert("There was a problem saving the shift: " + err))
+    }
+  }
+
   return (
     <Router>
       <Routes>
         <Route path="/login" element={ <Login handleSetUser={setUser}/> }/>
         <Route path="/signup" element={ <Signup handleSetUser={setUser} /> }/>
         <Route path="/edit" element={ <Edit handleSaveOrganisation={handleSaveOrganisation} handleDeleteOrganisation={handleDeleteOrganisation}/>} />
-        <Route path="/shifts" element={ <Shifts user={user} /> }/> 
+        <Route path="/shifts" element={ <Shifts user={user} handlePostShift={handlePostShift}/> }/> 
         <Route exact path="/" element={<Home user={user} handleLogOut={handleLogOut} handleCreateOrganisation={handleCreateOrganisation} handleJoinOrganisation={handleJoinOrganisation}
           handleLeaveOrganisation={handleLeaveOrganisation}/>}/>
       </Routes>
