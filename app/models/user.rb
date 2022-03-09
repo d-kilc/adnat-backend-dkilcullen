@@ -4,5 +4,5 @@ class User < ApplicationRecord
     has_many :shifts, dependent: :destroy
     belongs_to :organisation, optional: true
 
-    validates :password, length: {minimum: 6}
+    # validates :password, length: {minimum: 6}
 end

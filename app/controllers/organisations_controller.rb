@@ -28,12 +28,13 @@ skip_before_action :verify_authenticity_token
         render json: org, status: 200
     end
 
-    def destroy
-        org_id = params[:id]
-        org = Organisation.find org_id
-        org.destroy!
-        head :no_content
-    end
+    # def destroy
+    #     org_id = params[:id]
+    #     org = Organisation.find org_id
+    #     org.destroy
+    #     byebug
+    #     head :no_content
+    # end
 
     private
 

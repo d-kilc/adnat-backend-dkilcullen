@@ -1,6 +1,4 @@
 import { Navigate } from 'react-router'
-import { useEffect, useState } from 'react'
-
 import Dashboard from './Dashboard'
 import JoinOrg from './JoinOrg'
 

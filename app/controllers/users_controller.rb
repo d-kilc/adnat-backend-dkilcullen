@@ -17,9 +17,11 @@ skip_before_action :verify_authenticity_token
 
     def update
         user_id = params[:id]
+        # byebug
         user = User.find user_id
-        user.update! user_params
+        user.update! organisation_id: params[:organisation_id]
         if ( user_params.key? :organisation_id ) && ( user_params[:organisation_id] == nil )
+            # user.update! organisation_id: nil
             Shift.delete user.shifts
         end
         render json: user, status: 200
@@ -27,7 +29,6 @@ skip_before_action :verify_authenticity_token
 
     def password_reset
         user = User.find_by email: params[:email]
-        user_id = user.id
         user.update! user_params
         render json: user, status: 200
     end
@@ -35,7 +36,7 @@ skip_before_action :verify_authenticity_token
     private
 
     def user_params
-        params.permit :name, :email, :organisation_id, :password, :password_confirmation, :old_password
+        params.permit :name, :email, :organisation_id, :password, :password_confirmation
     end
 
     def record_not_found

@@ -7,6 +7,7 @@ Rails.application.routes.draw do
 
   resources :shifts
   resources :organisations, only: [:index, :create, :update, :destroy]
+  
   resources :organisations do
     resources :shifts, only: [:index]
   end

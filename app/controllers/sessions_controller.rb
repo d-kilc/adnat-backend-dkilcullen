@@ -2,7 +2,6 @@ class SessionsController < ApplicationController
     # protect_from_forgery with: :null_session, if: Proc.new { |c| c.request.format == 'application/json' }
     skip_before_action :verify_authenticity_token
 
-
     def create
         user = User.find_by email: params[:email]
         if user&.authenticate params[:password]
@@ -14,7 +13,7 @@ class SessionsController < ApplicationController
 
     def destroy
         session.delete :user_id
-        render json: {name: "unauthorized"}, status: 200
+        render json: {name: "Unauthorized"}, status: 200
     end
 
 end

@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, Navigate } from 'react-router-dom'
+import '../App.css'
 
 export default function Shifts({ user, handlePostShift }) {
 
     const { state } = useLocation()
     const [shifts, setShifts] = useState()
+    const [loading, setLoading] = useState(true)
     const [newShift, setNewShift] = useState({
         date: new Date(),
         startTime: '', 
@@ -12,6 +14,10 @@ export default function Shifts({ user, handlePostShift }) {
         breakLength: 0,
         user_id: 0,
     })
+
+    useEffect(() => {
+        setLoading(false)
+    }, [shifts])
 
     useEffect(() => {
         fetch(`/organisations/${state.organisation_id}`)
@@ -22,8 +28,6 @@ export default function Shifts({ user, handlePostShift }) {
             }
         })
     }, [user])
-    
-    console.log(user)
 
     useEffect(() => {
         if (user) setNewShift({...newShift, user_id: user.id})
@@ -40,60 +44,60 @@ export default function Shifts({ user, handlePostShift }) {
         }    
     }
 
-    if (shifts && user) {
+    // if (shifts && user !== "unauthorized") 
+    if(!loading && user) {
         return(
-            <>
-            <h1>Shifts</h1>
-            <table>
-               <thead>
-                    <tr>
-                        <td>Employee name</td>
-                        <td>Date</td>
-                        <td>Start time</td>
-                        <td>Finish time</td>
-                        <td>Break length (min.)</td>
-                        <td>Hours worked</td>
-                        <td>Shift cost</td>
-                    </tr>
-                </thead>
-                <tbody>
-
-                {user.organisation && shifts.map(shift => {
-                    const shiftStart = new Date(shift.start)
-                    const shiftEnd = new Date(shift.end)
-    
-                    const hoursWorked = ((shiftEnd - shiftStart)/3600000 - (shift.break_length / 60)).toFixed(2)
-                    const shiftCost = `$${(hoursWorked * user.organisation.hourly_rate).toFixed(2)}`
-    
-                    return (
+            <div className="container">
+                <h1 className="header">Shift Management</h1>
+                <h3 className="subheader">{user.organisation.name}</h3>
+                <table id="shifts-chart">
+                    <thead>
                         <tr>
-                            <td>{shift.username}</td>
-                            <td>{`${shiftStart.getMonth()+1}/${shiftStart.getDate()}/${shiftStart.getFullYear()}`}</td>
-                            <td>{shiftStart.toLocaleTimeString()}</td>
-                            <td>{shiftEnd.toLocaleTimeString()}</td>
-                            <td>{shift.break_length}</td>
-                            <td>{hoursWorked}</td>
-                            <td>{shiftCost}</td>
+                            <td>Employee name</td>
+                            <td>Date</td>
+                            <td>Start time</td>
+                            <td>Finish time</td>
+                            <td>Break length (min.)</td>
+                            <td>Hours worked</td>
+                            <td>Shift cost</td>
                         </tr>
-                    )
-                })}
-                <tr>
-                    <td>{user && user.name}</td>
-                    <td><input type="date" name="date" value={newShift.date.toLocaleDateString('en-GB').split('/').reverse().join('-')} onChange={handleUpdateNewShift}/></td>
-                    <td><input type="time" name="startTime" value={newShift.startTime} onChange={handleUpdateNewShift}/></td>
-                    <td><input type="time" name="endTime" value={newShift.endTime} onChange={handleUpdateNewShift}/></td>
-                    <td><input type="number" name="breakLength" value={newShift.breakLength} onChange={handleUpdateNewShift}/></td>
-                    <td colSpan="2">
-                        <button onClick={() => handlePostShift(newShift)}>Create shift</button>
-                    </td>
-                    <td></td>
-                </tr>
-                </tbody>
-            </table>
-            </>
+                    </thead>
+                    <tbody>
+                        {shifts && shifts.map(shift => {
+                            const shiftStart = new Date(shift.start)
+                            const shiftEnd = new Date(shift.end)
+            
+                            const hoursWorked = ((shiftEnd - shiftStart)/3600000 - (shift.break_length / 60)).toFixed(2)
+                            const shiftCost = `$${(hoursWorked * user.organisation.hourly_rate).toFixed(2)}`
+            
+                            return (
+                                <tr>
+                                    <td>{shift.username}</td>
+                                    <td>{`${shiftStart.getMonth()+1}/${shiftStart.getDate()}/${shiftStart.getFullYear()}`}</td>
+                                    <td>{shiftStart.toLocaleTimeString()}</td>
+                                    <td>{shiftEnd.toLocaleTimeString()}</td>
+                                    <td>{shift.break_length}</td>
+                                    <td>{hoursWorked}</td>
+                                    <td>{shiftCost}</td>
+                                </tr>
+                            )
+                        })}
+                        <tr>
+                            <td>{user && user.name}</td>
+                            <td><input type="date" name="date" value={newShift.date.toLocaleDateString('en-GB').split('/').reverse().join('-')} onChange={handleUpdateNewShift}/></td>
+                            <td><input type="time" name="startTime" value={newShift.startTime} onChange={handleUpdateNewShift}/></td>
+                            <td><input type="time" name="endTime" value={newShift.endTime} onChange={handleUpdateNewShift}/></td>
+                            <td><input type="number" name="breakLength" value={newShift.breakLength} onChange={handleUpdateNewShift}/></td>
+                            <td colSpan="2">
+                                <button onClick={() => handlePostShift(newShift)}>Create shift</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         )
-    } else {
-        return <div>Loading...</div>
+    }  else {
+        return <></>
     }
 
 }

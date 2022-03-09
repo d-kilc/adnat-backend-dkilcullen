@@ -1,25 +1,25 @@
 import { useEffect, useState } from "react"
 import { Link } from 'react-router-dom'
+import '../App.css'
 
 export default function JoinOrg({ user, handleLogOut, handleCreateOrganisation, handleJoinOrganisation}) {
     const [loading, setLoading] = useState(true)
     const [organisations, setOrganisations] = useState([])
     const [newOrg, setNewOrg] = useState({name: "", hourly_rate: 0})
+        
+    useEffect(fetchOrganisations, [])
 
+    useEffect(() => setLoading(false), [user])
 
     function handleSetNewOrg(e) {
         setNewOrg({...newOrg, [e.target.name]: e.target.value})
     }
-    
-    useEffect(() => {
+
+    function fetchOrganisations() {
         fetch('/organisations')
         .then(res => res.json())
         .then(setOrganisations)
-    }, [])
-
-    useEffect(() => {
-        setLoading(false)
-    }, [user])
+    }
 
     if (loading) {
         return (
@@ -28,30 +28,24 @@ export default function JoinOrg({ user, handleLogOut, handleCreateOrganisation, 
     }
     else {
         return (
-            <>
-            <h1>Dashboard</h1>
-            <p>{`Logged in as ${user && user.name}`}</p>
-            <button onClick={handleLogOut}>Log Out</button>
-            <p>You aren't a member of any organisations. Join an existing one or create a new one.</p>
-            <h2>Organisations:</h2>
-            <div>
-                {organisations.map(org => {
-                    return (
-                        <div>
-                            <div>{org.name}</div>
-                            <Link to={"/edit"} state={{organisation: org}}>Edit</Link>
-                            <button onClick={() => handleJoinOrganisation(org)}>
-                                Join
-                            </button>
-                        </div>
-
-                    )
-                })}
-            </div>
-            <h2>Create organisation</h2>
-            <table>
+            <div className="container">
+                <p>You aren't a member of any organisations. Join an existing one or create a new one.</p>
+                <h2>Organisations:</h2>
+                <div className="organisation-chart">
+                    {organisations.map(org => {
+                        return (
+                            <div key={org.id} className="dashboard-headline">
+                                <div className="org-control">{org.name}</div>
+                                <Link className="submit-button" to={"/edit"} state={{organisation: org}}>Edit</Link>
+                                <Link className="submit-button" to={"/"} onClick={() => handleJoinOrganisation(org)}>Join</Link>
+                            </div>
+                        )
+                    })}
+                </div>
+                <h2>Create organisation:</h2>
+                <table className="form">
                     <tr>
-                        <td>
+                        <td className="form-label">
                             <label>Name: </label>
                         </td>
                         <td>
@@ -59,7 +53,7 @@ export default function JoinOrg({ user, handleLogOut, handleCreateOrganisation, 
                         </td>
                     </tr>
                     <tr>
-                        <td>
+                        <td className="form-label">
                             <label>Hourly rate: $</label>
                         </td>
                         <td>
@@ -67,8 +61,8 @@ export default function JoinOrg({ user, handleLogOut, handleCreateOrganisation, 
                         </td>
                     </tr>
                 </table>
-                <button onClick={() => handleCreateOrganisation(newOrg)}>Create and Join</button>
-            </>
+                <button className="submit-button" onClick={() => handleCreateOrganisation(newOrg)}>Create and Join</button>
+            </div>
         ) 
     }
 

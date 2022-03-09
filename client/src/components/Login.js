@@ -1,46 +1,35 @@
 import { Link, Navigate } from 'react-router-dom'
 import { useState } from 'react'
+import '../App.css'
 
-export default function Login({handleSetUser}) {
+export default function Login({handleLogIn, loggedIn}) {
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     })
 
-    const [loggedIn, setLoggedIn] = useState(false)
+    // const [loggedIn, setLoggedIn] = useState(false)
     
     function handleInputChange(e) {
         setFormData({...formData, [e.target.name]: e.target.value})
     }
 
-    function handleLogin() {
-        fetch('/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', accept: 'application/json'},
-            body: JSON.stringify(formData)
-        })
-        .then(res => res.json())
-        .then(handleSetUser)
-        .then(() => setLoggedIn(true))
-        .catch(() => alert('There was a problem logging in.'))
-    }
-
     if (loggedIn) return <Navigate replace to="/"/> 
 
     return (
-        <div>
+        <div className="container">
             <h1>Log In</h1>
-            <table>
+            <table className="form">
                 <tr>
-                    <td>
-                        <label>Email: </label>
+                    <td className="form-label">
+                        <label >Email: </label>
                     </td>
                     <td>
                         <input type="text" name="email" value={formData.email} onChange={handleInputChange} />
                     </td>
                 </tr>
                 <tr>
-                    <td>
+                    <td className="form-label">
                         <label>Password: </label>
                     </td>
                     <td>
@@ -48,13 +37,8 @@ export default function Login({handleSetUser}) {
                     </td>
                 </tr>
             </table>
-            <div>
-                <input type="checkbox" name="remember-me"/>
-                <label>Remember me</label>
-            </div>
-            <button onClick={handleLogin}>Log in</button>
-            <br/>
-            <Link to="/signup">Sign Up</Link>
+            <button className="submit-button" onClick={() => handleLogIn(formData)}>Log in</button>
+            <Link className="submit-button" to="/signup">Sign Up</Link>
             <br/>
             <Link to="/forgot-password">Forgot your password?</Link>
         </div>

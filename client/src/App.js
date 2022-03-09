@@ -2,6 +2,7 @@ import { BrowserRouter as Router, useNavigate } from 'react-router-dom'
 import { Routes, Route, Link, Navigate } from 'react-router'
 import { useState, useEffect } from 'react'
 
+import Navbar from './components/Navbar'
 import Signup from './components/Signup'
 import Home from './components/Home'
 import Login from './components/Login'
@@ -12,6 +13,7 @@ import ForgotPassword from './components/ForgotPassword'
 function App() {
 
   const [user, setUser] = useState()
+  const [loggedIn, setLoggedIn] = useState(false)
 
   useEffect(currentUser, [])
 
@@ -27,6 +29,18 @@ function App() {
     })
   }
 
+  function handleLogIn(data) {
+    fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', accept: 'application/json'},
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(setUser)
+    .then(() => setLoggedIn(true))
+    .catch(() => alert('There was a problem logging in.'))
+}
+
   function handleLogOut() {
     fetch('/logout', { method: 'DELETE' })
     .then(res => {
@@ -36,15 +50,20 @@ function App() {
     })
   }
 
-  function handlePasswordReset(object) {
+  function handlePasswordReset(user) {
     fetch('/password-reset', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json'},
-      body: JSON.stringify(object)
-    })
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json'},
+        body: JSON.stringify(user)
+      })
     .then(res => res.json())
-    .then(setUser)
-  }
+    .then(data => handleLogIn({email: user.email, password: user.password}))
+    .then(() => {
+        // setLoggedIn(true)
+        alert('Password updated!')
+    })
+    .catch(() => alert('There was a problem updating the password.'))   
+}
 
   function handleCreateOrganisation(org) {
     fetch('/organisations', {
@@ -66,8 +85,14 @@ function App() {
       headers: { "Content-Type": "application/json", accept: 'application/json'},
       body: JSON.stringify({organisation_id: org.id})
     })
-    .then(() => alert('Organisation joined successfully.'))
-    .catch(err => alert(`There was a problem joining the organisation: ${err}`))
+    .then(res => {
+      if (res.ok) {
+        alert('Organisation joined successfully.')
+      }
+      else {
+        alert(`There was a problem joining the organisation.`)
+      }
+    })
   }
 
   function handleLeaveOrganisation() {
@@ -88,6 +113,8 @@ function App() {
   }
 
   function handleSaveOrganisation(org) {
+    setUser({ ...user, organisation: org })
+
     fetch(`/organisations/${org.id}`, { 
         method: 'PATCH',
         headers: {"Content-Type": "application/json", Accept: "application/json"},
@@ -100,22 +127,23 @@ function App() {
       else {
         alert('There was a problem updating the organisation.')
       }
+
     })
   }
 
-  function handleDeleteOrganisation(id) {
-    fetch(`/organisations/${id}`, {
-      method: 'DELETE',
-    })
-    .then(res => {
-      if (res.ok) {
-        alert('Organisation deleted.')
-      }
-      else {
-        alert('There was a problem deleting the organisation.')
-      }
-    })
-  }
+  // function handleDeleteOrganisation(id) {
+  //   fetch(`/organisations/${id}`, {
+  //     method: 'DELETE',
+  //   })
+  //   .then(res => {
+  //     if (res.ok) {
+  //       alert('Organisation deleted.')
+  //     }
+  //     else {
+  //       alert('There was a problem deleting the organisation.')
+  //     }
+  //   })
+  // }
 
   function handlePostShift(newShift) {
     
@@ -147,17 +175,21 @@ function App() {
   }
 
   return (
+    <>
+    
     <Router>
+      <Navbar handleLogOut={handleLogOut} user={user}/>
       <Routes>
-        <Route path="/login" element={ <Login handleSetUser={setUser}/> }/>
+        <Route path="/login" element={ <Login handleLogIn={handleLogIn} loggedIn={loggedIn}/> }/>
         <Route path="/signup" element={ <Signup handleSetUser={setUser}/> }/>
-        <Route path="/forgot-password" element={ <ForgotPassword handlePasswordReset={handlePasswordReset} handleSetUser={setUser}/> }/>
-        <Route path="/edit" element={ <Edit handleSaveOrganisation={handleSaveOrganisation} handleDeleteOrganisation={handleDeleteOrganisation}/>} />
+        <Route path="/forgot-password" element={ <ForgotPassword handlePasswordReset={handlePasswordReset} loggedIn={loggedIn}/> }/>
+        <Route path="/edit" element={ <Edit handleSaveOrganisation={handleSaveOrganisation}/>} />
         <Route path="/shifts" element={ <Shifts user={user} handlePostShift={handlePostShift}/> }/> 
         <Route exact path="/" element={<Home user={user} handleLogOut={handleLogOut} handleCreateOrganisation={handleCreateOrganisation} handleJoinOrganisation={handleJoinOrganisation}
           handleLeaveOrganisation={handleLeaveOrganisation}/>}/>
       </Routes>
     </Router>
+    </>
   );
 }
 

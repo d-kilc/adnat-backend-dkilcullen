@@ -35,30 +35,23 @@ export default function Signup({ handleSetUser }) {
     }
 
     return (
-        <>
-        <h1>Sign up</h1>
-
-        <label>Name</label>
-        <br />
-        <input name="name" value={formData.name} onChange={handleUpdateForm}/>
-        <br/>
-        <label>Email</label>
-        <br />
-        <input name="email" value={formData.email} onChange={handleUpdateForm}/>
-        <br/>
-        <label>Password (Min. 6 characters)</label>
-        <br />
-        <input type="password" name="password" value={formData.password} onChange={handleUpdateForm}/>
-        <br/>
-        <label>Confirm password</label>
-        <br />
-        <input type="password" name="password_confirmation" value={formData.password_confirmation} onChange={handleUpdateForm}/>
-        <br />
-        <button onClick={() => {
-            handleCreateUser(formData)
-        }}>Sign Up</button>
-        <br/>
-        <Link to="/login">Log In</Link>
-        </>
+        <div className="container">
+            <h1>Sign up</h1>
+            <table className="form">
+                <tr className="form-label">Name</tr>
+                <tr><input name="name" value={formData.name} onChange={handleUpdateForm}/></tr>
+                <tr className="form-label">Email</tr>
+                <tr><input name="email" value={formData.email} onChange={handleUpdateForm}/></tr>
+                <tr className="form-label">Password (Min. 6 characters)</tr>
+                <tr><input type="password" name="password" value={formData.password} onChange={handleUpdateForm}/></tr>
+                <tr className="form-label">Confirm password</tr>
+                <tr><input type="password" name="password_confirmation" value={formData.password_confirmation} onChange={handleUpdateForm}/></tr>
+            </table>
+            <button className="submit-button" onClick={() => {
+                    handleCreateUser(formData)
+            }}>Sign Up</button>
+            
+            <Link className="submit-button" to="/login">Log In</Link>
+        </div>
     )
 }
