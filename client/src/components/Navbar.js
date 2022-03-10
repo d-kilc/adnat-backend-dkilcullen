@@ -15,7 +15,7 @@ export default function Navbar({user, handleLogOut}) {
     }
 
     if (user && !loading) return (
-        <Grid container position="static" sx={{ height: '80px', backgroundColor: 'orange', boxShadow: 6}} justifyContent="space-between" alignItems="center">
+        <Grid container position="static" sx={{ height: '80px', backgroundColor: '#032C57', boxShadow: 6}} justifyContent="space-between" alignItems="center">
             <Grid item>
                 <Grid ml={1} container justifyContent="space-between">
                     {user.name !== "Unauthorized" ? <Button sx={{color: 'white'}} onClick={goBack} id="back">Back</Button> : <></> }
