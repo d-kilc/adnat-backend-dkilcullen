@@ -14,14 +14,14 @@ user4 = User.create name: "Amanda", email: "amanda@example.com", password: "test
 
 puts "Creating shifts..."
 
-shift1 = Shift.create user_id: user1.id, start: Time.now, end: Time.now + 1000000, break_length: 10
-shift2 = Shift.create user_id: user1.id, start: Time.now, end: Time.now + 10000, break_length: 10
-shift3 = Shift.create user_id: user1.id, start: Time.now, end: Time.now + 50000, break_length: 10
+shift1 = Shift.create user_id: user1.id, start: Time.now - 4000, end: Time.now + 8000, break_length: 10
+shift2 = Shift.create user_id: user1.id, start: Time.now - 2000, end: Time.now + 10000, break_length: 10
+shift3 = Shift.create user_id: user1.id, start: Time.now - 4000, end: Time.now + 9000, break_length: 10
 
-shift4 = Shift.create user_id: user2.id, start: Time.now, end: Time.now, break_length: 10
-shift5 = Shift.create user_id: user2.id, start: Time.now, end: Time.now, break_length: 10
+shift4 = Shift.create user_id: user2.id, start: Time.now - 5000, end: Time.now + 9000, break_length: 10
+shift5 = Shift.create user_id: user2.id, start: Time.now - 4000, end: Time.now + 6000, break_length: 10
 
-shift6 = Shift.create user_id: user4.id, start: Time.now, end: Time.now, break_length: 10
-shift7 = Shift.create user_id: user4.id, start: Time.now, end: Time.now, break_length: 10
+shift6 = Shift.create user_id: user4.id, start: Time.now - 2000, end: Time.now - 8000, break_length: 10
+shift7 = Shift.create user_id: user4.id, start: Time.now - 5000, end: Time.now + 7000, break_length: 10
 
 puts "Done!"

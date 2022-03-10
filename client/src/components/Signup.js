@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, Navigate } from 'react-router-dom'
+import { Grid, Typography, TextField, Button } from '@mui/material'
+
 export default function Signup({ handleSetUser }) {
     
     const [formData, setFormData] = useState({
@@ -35,23 +37,31 @@ export default function Signup({ handleSetUser }) {
     }
 
     return (
-        <div className="container">
-            <h1>Sign up</h1>
-            <table className="form">
-                <tr className="form-label">Name</tr>
-                <tr><input name="name" value={formData.name} onChange={handleUpdateForm}/></tr>
-                <tr className="form-label">Email</tr>
-                <tr><input name="email" value={formData.email} onChange={handleUpdateForm}/></tr>
-                <tr className="form-label">Password (Min. 6 characters)</tr>
-                <tr><input type="password" name="password" value={formData.password} onChange={handleUpdateForm}/></tr>
-                <tr className="form-label">Confirm password</tr>
-                <tr><input type="password" name="password_confirmation" value={formData.password_confirmation} onChange={handleUpdateForm}/></tr>
-            </table>
-            <button className="submit-button" onClick={() => {
-                    handleCreateUser(formData)
-            }}>Sign Up</button>
-            
-            <Link className="submit-button" to="/login">Log In</Link>
-        </div>
+        <Grid container xs={12} flexDirection="column">
+            <Typography xs={12} mx="auto" my={4} variant="h3">Sign up</Typography>
+            <Grid item xs={12} my={1} mx="auto">
+                <TextField sx={{width: '100%'}} name="name" label="Name" value={formData.name} onChange={handleUpdateForm}/>
+            </Grid>
+            <Grid item xs={12} my={1} mx="auto">    
+                <TextField sx={{width: '100%'}} name="email" label="Email" value={formData.email} onChange={handleUpdateForm}/>
+            </Grid>
+            <Grid item xs={12} my={1} mx="auto">                  
+                <TextField sx={{width: '100%'}} type="password" label="Password" name="password" value={formData.password} onChange={handleUpdateForm}/>
+            </Grid>
+            <Grid item xs={12} my={1} mx="auto">  
+                <TextField sx={{width: '100%'}} type="password" label="Confirm Password" name="password_confirmation" value={formData.password_confirmation} onChange={handleUpdateForm}/>
+            </Grid>
+            <Grid item xs={12} my={1} mx="auto">  
+                <Button variant="contained" mx="auto" sx={{width: '100px'}} onClick={() => {
+                        handleCreateUser(formData)
+                }}>Sign Up</Button>
+            </Grid>
+            <Grid item xs={12} mx="auto">  
+                <Link to="/login">Log In</Link>
+            </Grid>
+            <Grid item xs={12} mx="auto">  
+                <Link to="/forgot-password">Forgot Password</Link>
+            </Grid>
+        </Grid>
     )
 }

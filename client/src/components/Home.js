@@ -4,7 +4,7 @@ import JoinOrg from './JoinOrg'
 
 export default function Home({ user, handleLogOut, handleCreateOrganisation, handleJoinOrganisation, handleLeaveOrganisation }) {
 
-    if (user && user.name === "unauthorized") {
+    if (user && user.name === "Unauthorized") {
         return <Navigate replace to="/login" />
     }
 

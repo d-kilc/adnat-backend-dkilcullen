@@ -1,18 +1,24 @@
 import { Link } from 'react-router-dom'
+import { Typography, ButtonGroup, Button } from '@mui/material'
 
-export default function Dashboard({ user, handleLogOut, handleLeaveOrganisation }) {
+export default function Dashboard({ user, handleLeaveOrganisation }) {
 
     return(
-        <div className="container">
+        <div>
 
-            <h1>Welcome, {user.name}</h1>
-            <h2 className="subheader">Your organisation: </h2>
-            <div className="dashboard-headline">
-                <h2>{user.organisation.name}</h2>
-                <Link className="submit-button" to={'/shifts'} state={{organisation_id: user.organisation.id}}>View Shifts</Link>
-                <Link className="submit-button" to={'/edit'} state={{organisation: user.organisation}}>Edit</Link>
-                <Link className="submit-button" to={'/'} onClick={handleLeaveOrganisation}>Leave</Link>
-            </div>
+            <Typography variant="h3" m={4} >Welcome, {user.name}!</Typography>
+            <Typography variant="h5" ml={4}>Organisation: {user.organisation.name}</Typography>
+            <ButtonGroup variant="contained" sx={{margin: '32px;'}}>
+                <Button>
+                <Link to={'/shifts'} state={{organisation_id: user.organisation.id}} className="unstyled-link">View Shifts</Link>
+                </Button>
+                <Button>
+                    <Link to={'/edit'} state={{organisation: user.organisation}} className="unstyled-link">Edit</Link>
+                </Button>
+                <Button>
+                    <Link to={'/'} onClick={handleLeaveOrganisation} className="unstyled-link">Leave</Link>
+                </Button>
+            </ButtonGroup >
 
         </div>
     )

@@ -24,7 +24,7 @@ function App() {
         r.json().then(setUser);
       }
       else {
-        setUser({name: 'unauthorized'})
+        setUser({name: 'Unauthorized'})
       }
     })
   }
@@ -131,20 +131,6 @@ function App() {
     })
   }
 
-  // function handleDeleteOrganisation(id) {
-  //   fetch(`/organisations/${id}`, {
-  //     method: 'DELETE',
-  //   })
-  //   .then(res => {
-  //     if (res.ok) {
-  //       alert('Organisation deleted.')
-  //     }
-  //     else {
-  //       alert('There was a problem deleting the organisation.')
-  //     }
-  //   })
-  // }
-
   function handlePostShift(newShift) {
     
     if (!newShift.date || !newShift.breakLength || newShift.startTime === '' || newShift.endTime === '' ) {
@@ -157,11 +143,11 @@ function App() {
         break_length: parseInt(newShift.breakLength),
         user_id: parseInt(newShift.user_id),
       }
-
-      formattedShift.start.setHours(newShift.startTime[0,1])
-      formattedShift.start.setMinutes(newShift.startTime[3,4])
-      formattedShift.end.setHours(newShift.endTime[0,1])
-      formattedShift.end.setMinutes(newShift.endTime[3,4])
+      
+      const startHours = newShift.startTime.split(':')
+      const endHours = newShift.endTime.split(':')
+      formattedShift.start.setHours(startHours[0], startHours[1])
+      formattedShift.end.setHours(endHours[0], endHours[1])
 
       fetch('/shifts', {
         method: 'POST',

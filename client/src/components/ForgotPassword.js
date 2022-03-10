@@ -1,5 +1,7 @@
 import { useState  } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, Link } from 'react-router-dom'
+import { Grid, Typography, TextField, Button } from '@mui/material'
+
 export default function ForgotPassword({handlePasswordReset, loggedIn}) {
     
     const [formData, setFormData] = useState({
@@ -15,29 +17,26 @@ export default function ForgotPassword({handlePasswordReset, loggedIn}) {
     if (loggedIn) return <Navigate replace to="/" />
 
     return (
-        <div className="container">
-        <h1>Password Reset</h1>
-        <table className="form">
-            <tr className="form-label">
-                <label>Email</label>
-            </tr>
-            <tr className="form-label">
-                <input name="email" value={formData.email} onChange={handleUpdateForm}/>
-            </tr>
-            <tr className="form-label">
-                <label>New password (Min. 6 characters)</label>
-            </tr>
-            <tr className="form-label">
-                <input type="password" name="password" value={formData.password} onChange={handleUpdateForm}/>
-            </tr>
-            <tr className="form-label">
-                <label>Confirm password</label>
-            </tr>
-            <tr className="form-label">
-                <input type="password" name="password_confirmation" value={formData.password_confirmation} onChange={handleUpdateForm}/>
-            </tr>
-        </table>
-        <button className="submit-button" onClick={() => handlePasswordReset(formData)}>Reset</button>
-        </div>
+        <Grid container flexDirection="column">
+            <Typography xs={12} mx="auto" my={4} variant="h3">Password Reset</Typography>
+            <Grid my={1} mx="auto" item xs={12}>
+                <TextField label="Name" name="email" value={formData.email} onChange={handleUpdateForm}/>
+            </Grid>
+            <Grid my={1} mx="auto" item xs={12}>
+                <TextField label="Password" type="password" name="password" value={formData.password} onChange={handleUpdateForm}/>
+            </Grid>
+            <Grid my={1} mx="auto" item xs={12}>
+                <TextField label="Confirm Password" type="password" name="password_confirmation" value={formData.password_confirmation} onChange={handleUpdateForm}/>
+            </Grid>
+            <Grid item my={1} mx="auto" item xs={12}>
+                <Button variant="contained" sx={{width: '100px'}} mx="auto" onClick={() => handlePasswordReset(formData)}>Reset</Button>
+            </Grid>
+            <Grid item xs={12} mx="auto">  
+                <Link to="/login">Log In</Link>
+            </Grid>
+            <Grid item xs={12} mx="auto">  
+                <Link to="/signup">Sign Up</Link>
+            </Grid>
+        </Grid>
     )
 }

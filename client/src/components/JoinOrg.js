@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link } from 'react-router-dom'
-import '../App.css'
+import { Typography, Grid, Card, Button, TextField } from '@mui/material'
 
 export default function JoinOrg({ user, handleLogOut, handleCreateOrganisation, handleJoinOrganisation}) {
     const [loading, setLoading] = useState(true)
@@ -29,39 +29,45 @@ export default function JoinOrg({ user, handleLogOut, handleCreateOrganisation, 
     else {
         return (
             <div className="container">
-                <p>You aren't a member of any organisations. Join an existing one or create a new one.</p>
-                <h2>Organisations:</h2>
-                <div className="organisation-chart">
+                <Typography m={2} textAlign="center" variant="h5">You aren't a member of any organisations. Join an existing one or create a new one to continue.</Typography>
+                <Typography variant="h3" my={4} ml={2}>Organisations:</Typography>
+                <Grid container spacing={2} xs={12} flexDirection="row" mx="auto">
                     {organisations.map(org => {
                         return (
-                            <div key={org.id} className="dashboard-headline">
-                                <div className="org-control">{org.name}</div>
-                                <Link className="submit-button" to={"/edit"} state={{organisation: org}}>Edit</Link>
-                                <Link className="submit-button" to={"/"} onClick={() => handleJoinOrganisation(org)}>Join</Link>
-                            </div>
+                            <Grid item xs={12} sm={6} md={4} key={org.id} className="dashboard-headline">
+                                <Card variant="outlined">
+                                    <Typography my={1} ml={1} mb={3} variant="h5">{org.name}</Typography>
+                                    <Grid container justifyContent="space-between">
+                                        <Grid item m={1}>
+                                            <Button variant="contained" ml="10px">
+                                                <Link className="unstyled-link" to={"/edit"} state={{organisation: org}}>Edit</Link>
+                                            </Button>
+                                        </Grid>
+                                        <Grid item m={1}>
+                                            <Button variant="contained">
+                                                <Link className="unstyled-link" to={"/"} onClick={() => handleJoinOrganisation(org)}>Join</Link>
+                                            </Button>
+                                        </Grid>
+
+                                    </Grid>
+                                </Card>
+                            </Grid>
                         )
                     })}
-                </div>
-                <h2>Create organisation:</h2>
-                <table className="form">
-                    <tr>
-                        <td className="form-label">
-                            <label>Name: </label>
-                        </td>
-                        <td>
-                            <input type="text" name="name" onChange={handleSetNewOrg}/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td className="form-label">
-                            <label>Hourly rate: $</label>
-                        </td>
-                        <td>
-                            <input type="number" name="hourly_rate" onChange={handleSetNewOrg}/>
-                        </td>
-                    </tr>
-                </table>
-                <button className="submit-button" onClick={() => handleCreateOrganisation(newOrg)}>Create and Join</button>
+                </Grid>
+                <Typography textAlign="center" variant="h4" mx="auto" my={4}>Create Organisation</Typography>
+                <Grid container xs={12} flexDirection="column">
+                    <Grid item xs={12} my={1} mx="auto">
+                        <TextField sx={{width: '100%'}} label="Org. Name" type="text" name="name" onChange={handleSetNewOrg}/>
+                    </Grid>
+                    <Grid item xs={12} my={1} mx="auto">
+                        <TextField label="Hourly Wage" type="number" name="hourly_rate" onChange={handleSetNewOrg}/>
+                    </Grid>
+                    <Grid item xs={12} my={1} mx="auto">
+                        <Button variant="contained" onClick={() => handleCreateOrganisation(newOrg)}>Create and Join</Button>        
+                    </Grid>
+                </Grid>
+                
             </div>
         ) 
     }

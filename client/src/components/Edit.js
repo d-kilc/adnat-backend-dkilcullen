@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useLocation, Link, useNavigate } from 'react-router-dom'
+import { TextField, Grid, Button, Typography } from '@mui/material'
+
 
 export default function Edit({handleSaveOrganisation}) {
     
@@ -12,30 +14,22 @@ export default function Edit({handleSaveOrganisation}) {
     }
 
     return(
-        <div className="container">
-            <h1>Edit Organisation</h1>
-            <table className="form">
-                <tr>
-                    <td className="form-label">Name: </td>
-                    <td>
-                        <input value={organisation.name} name="name" onChange={handleUpdateOrganisation}/>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="form-label">Hourly Rate: $</td>
-                    <td>
-                        <input value={organisation.hourly_rate} name="hourly_rate" onChange={handleUpdateOrganisation}/>
-                    </td>
-                </tr>
-            </table>
-            <button className="submit-button" onClick={() => {
-                handleSaveOrganisation(organisation)
-                navigate('/')
-            }}>Update and Join</button>
-            {/* <button onClick={() => {
-                handleDeleteOrganisation(organisation.id)
-                navigate('/')
-            }}>Delete Organisation</button> */}
-        </div>
+        <Grid container xs={12} flexDirection="column">
+            <Grid item xs={12} mx="auto">
+                <Typography variant="h3" xs={12} m={4}>Edit Organisation</Typography>
+            </Grid>
+            <Grid item xs={12} my={1} mx="auto">
+                <TextField value={organisation.name} name="name" onChange={handleUpdateOrganisation}/> 
+            </Grid>
+            <Grid item xs={12} my={1} mx="auto">
+                <TextField value={organisation.hourly_rate} name="hourly_rate" onChange={handleUpdateOrganisation}/>
+            </Grid>
+            <Grid item xs={12} mx="auto">
+                <Button variant="contained" className="submit-Button" onClick={() => {
+                    handleSaveOrganisation(organisation)
+                    navigate('/')
+                }}>Update and Join</Button>
+            </Grid>   
+        </Grid>
     )
 }
