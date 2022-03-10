@@ -1,13 +1,17 @@
 Rails.application.routes.draw do
-  
-  # TO DO: remove unneccessary routes
-  post '/login', to: 'sessions#create'
-  delete '/logout', to: 'sessions#destroy'
+ 
   get '/me', to: 'users#show'
 
-  resources :shifts
-  resources :organisations, only: [:index, :create, :update, :destroy]
-  
+  post '/login', to: 'sessions#create'
+  delete '/logout', to: 'sessions#destroy'
+  patch '/password-reset', to: 'users#password_reset'
+
+  post '/users', to: 'users#create'
+  patch '/users/:id', to: 'users#update' 
+
+  resources :shifts, only: [:create, :destroy]
+  resources :organisations, only: [:index, :create, :update]
+
   resources :organisations do
     resources :shifts, only: [:index]
   end
@@ -15,12 +19,5 @@ Rails.application.routes.draw do
   resources :users do
     resources :shifts, only: [:destroy]
   end
-
-  #signup
-  post '/users', to: 'users#create'
-  # user joining an organisation
-  # user leaving an organisation
-  patch '/users/:id', to: 'users#update' 
-  patch '/password-reset', to: 'users#password_reset'
 
 end

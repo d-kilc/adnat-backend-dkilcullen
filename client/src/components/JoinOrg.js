@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link } from 'react-router-dom'
-import { Typography, Grid, Card, Button, TextField } from '@mui/material'
+import { Typography, Grid, Card, Button } from '@mui/material'
 
 export default function JoinOrg({ user, handleJoinOrganisation}) {
     const [loading, setLoading] = useState(true)
@@ -21,6 +21,7 @@ export default function JoinOrg({ user, handleJoinOrganisation}) {
             <div>Loading...</div>
         )
     }
+
     else {
         return (
             <>

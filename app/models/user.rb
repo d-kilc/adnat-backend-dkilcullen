@@ -1,8 +1,7 @@
 class User < ApplicationRecord
-    # assuming dependent destroy
     has_secure_password
-    has_many :shifts, dependent: :destroy
+    has_many :shifts
     belongs_to :organisation, optional: true
-
-    # validates :password, length: {minimum: 6}
+    validates :email, format: {with: /@/, message: "malformed"}
+    validates :password, length: {minimum: 6}, on: :create
 end

@@ -1,24 +1,21 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+To run the application:
+1. Clone the repository to your local machine
+2. In a terminal window, navigate to the newly created directory
 
-Things you may want to cover:
+```cd /path/to/folder```
 
-* Ruby version
+3. Once inside the new directory, run the following commands:
 
-* System dependencies
+```gem install foreman```
 
-* Configuration
+```foreman start```
 
-* Database creation
+* The server is now running locally on port 5000
+* The client is now running locally on port 4000
 
-* Database initialization
+<sub>NOTE: the foreman Ruby gem should NOT be present in the application Gemfile</sub>
 
-* How to run the test suite
+4. Open your favorite web browser and navigate to http://localhost:4000/ to interact with the application.
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...

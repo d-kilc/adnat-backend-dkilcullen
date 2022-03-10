@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { TextField, Grid, Button, Typography } from '@mui/material'
 
-
 export default function EditOrganisation({handleSaveOrganisation}) {
     
     const { state } = useLocation()

@@ -1,5 +1,5 @@
-import { BrowserRouter as Router, useNavigate } from 'react-router-dom'
-import { Routes, Route, Link, Navigate } from 'react-router'
+import { BrowserRouter as Router } from 'react-router-dom'
+import { Routes, Route } from 'react-router'
 import { useState, useEffect } from 'react'
 
 import Navbar from './components/Navbar'
@@ -120,7 +120,7 @@ function App() {
         })
       }
     })  
-}
+  }
 
   function handleCreateOrganisation(org) {
     fetch('/organisations', {
@@ -128,14 +128,20 @@ function App() {
       headers: { "Content-Type": "application/json", accept: 'application/json'},
       body: JSON.stringify(org)
     })
-    .then(res => res.json())
-    .then(handleJoinOrganisation)
-    .catch(err => alert(`There was a problem creating the organisation: ${err}`))
-
+    .then(res => {
+      if (res.ok) {
+        res.json().then(data => {
+          handleJoinOrganisation(data)
+        })
+      } else {
+        res.json().then(data => {
+          alert('There was a problem creating the organisation: ' + data.errors)
+        })
+      }
+    })
   }
 
   function handleJoinOrganisation(org) {
-console.log(org)
     fetch(`/users/${user.id}`, {
       method: 'PATCH',
       headers: { "Content-Type": "application/json", accept: 'application/json'},
@@ -151,7 +157,6 @@ console.log(org)
         res.json().then(data => {
           alert('There was a problem joining the organisation: ' + data.errors)
         })
-      
       }
     })
   }

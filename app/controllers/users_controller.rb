@@ -1,6 +1,5 @@
 class UsersController < ApplicationController
-rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
-rescue_from ActiveRecord::RecordInvalid, with: :record_invalid
+
 skip_before_action :verify_authenticity_token
 
     def create
@@ -17,18 +16,17 @@ skip_before_action :verify_authenticity_token
 
     def update
         user_id = params[:id]
-        # byebug
         user = User.find user_id
-        user.update! organisation_id: params[:organisation_id]
+        user.update! user_params
+
         if ( user_params.key? :organisation_id ) && ( user_params[:organisation_id] == nil )
-            # user.update! organisation_id: nil
             Shift.delete user.shifts
         end
         render json: user, status: 200
     end
 
     def password_reset
-        user = User.find_by email: params[:email]
+        user = User.find_by! email: params[:email]
         user.update! user_params
         render json: user, status: 200
     end
@@ -37,14 +35,6 @@ skip_before_action :verify_authenticity_token
 
     def user_params
         params.permit :name, :email, :organisation_id, :password, :password_confirmation
-    end
-
-    def record_not_found
-        render json: {}, status: 404
-    end
-
-    def record_invalid invalid
-        render json: {}, status: 422
     end
     
 end
