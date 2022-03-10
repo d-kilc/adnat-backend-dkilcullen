@@ -1,9 +1,9 @@
 # README
 
 <h2>Using the Application </h2>
-To run the application:
+
 1. Clone this repository to your local machine
-2. In a terminal window, navigate to the newly created directory
+2. In a terminal window, navigate to the newly created directory:
 
 ```cd /path/to/folder```
 
