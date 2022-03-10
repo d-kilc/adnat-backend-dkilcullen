@@ -16,8 +16,8 @@ export default function Login({handleLogIn, loggedIn}) {
 
     return (
         <Grid container flexDirection="column">
-            <Typography variant="h3" mx="auto" my={4}>Log In</Typography>
-            <Grid item xs={12} mx='auto' my={2}>
+            <Typography variant="h4" mx="auto" my={3}>Log In</Typography>
+            <Grid item xs={12} mx='auto' my={1}>
                 <Grid container alignItems="center">
                     <Grid item xs={12} my={2}>
                         <TextField sx={{width: '100%'}} type="text" name="email" label="Email" value={formData.email} onChange={handleInputChange} />

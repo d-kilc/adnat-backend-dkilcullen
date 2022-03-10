@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { Grid, Typography, TextField, Button } from '@mui/material'
 
-export default function Signup({ handleSetUser }) {
+export default function Signup({ handleCreateUser, loggedIn }) {
     
     const [formData, setFormData] = useState({
         name: '',
@@ -11,25 +11,8 @@ export default function Signup({ handleSetUser }) {
         password_confirmation: ''
     })
 
-    const [ loggedIn, setLoggedIn ] = useState(false)
-
     function handleUpdateForm(e) {
         setFormData({...formData, [e.target.name]: e.target.value})
-    }
-
-    function handleCreateUser(user) {
-        fetch('/users', { 
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-            body: JSON.stringify(user)
-        })
-        .then(res => res.json())
-        .then(handleSetUser)
-        .then(() => {
-            setLoggedIn(true)
-            alert('Account created!')
-        })
-        .catch(() => alert('There was a problem creating the user.'))   
     }
 
     if (loggedIn) {

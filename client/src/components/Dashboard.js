@@ -6,9 +6,9 @@ export default function Dashboard({ user, handleLeaveOrganisation }) {
     return(
         <div>
 
-            <Typography variant="h3" m={4} >Welcome, {user.name}!</Typography>
-            <Typography variant="h5" ml={4}>Organisation: {user.organisation.name}</Typography>
-            <ButtonGroup variant="contained" sx={{margin: '32px;'}}>
+            <Typography variant="h4" ml={2} my={4} >Welcome, {user.name}!</Typography>
+            <Typography variant="h5" ml={2}>Organisation: {user.organisation.name}</Typography>
+            <ButtonGroup variant="contained" sx={{marginLeft: '16px;', marginTop: '24px'}}>
                 <Button>
                 <Link to={'/shifts'} state={{organisation_id: user.organisation.id}} className="unstyled-link">View Shifts</Link>
                 </Button>

@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
-import { useLocation, Navigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { TextField, Typography, Button, Table, TableBody, TableHead, TableRow, TableCell } from '@mui/material'
 import '../App.css'
 import { DateTime } from "luxon";
 
 
-export default function Shifts({ user, handlePostShift }) {
-
+export default function Shifts({ user, handlePostShift, handleDeleteShift }) {
+console.log(user)
     const { state } = useLocation()
     const [shifts, setShifts] = useState()
     const [loading, setLoading] = useState(true)
@@ -35,7 +35,7 @@ export default function Shifts({ user, handlePostShift }) {
     useEffect(() => {
         if (user) setNewShift({...newShift, user_id: user.id})
     }, [user])
-console.log(shifts)
+    
     function formatShifts(shifts) {
         return shifts.map(shift => {
             return ({
@@ -57,12 +57,7 @@ console.log(shifts)
         }    
     }
 
-    function formatDate(date) {
-        date.setDate( date.getDate() + 1 )
-        return date.toLocaleDateString('en-CA')
-    }
-
-    // if (shifts && user !== "unauthorized") 
+    if (!user) return <></>
     if(!loading && user) {
 
         const shiftsSorted = shifts && shifts.sort((a, b) => (a.start > b.start) ? -1 : 1 )
@@ -74,24 +69,27 @@ console.log(shifts)
             const hoursWorked = ((shiftEnd - shiftStart)/3600000 - (shift.break_length / 60)).toFixed(2)
             const shiftCost = `$${(hoursWorked * user.organisation.hourly_rate).toFixed(2)}`
 
+            const deleter = shift.user_id === user.id ? (
+                <Button color="warning" onClick={() => handleDeleteShift(shift)} variant="contained">x</Button>
+            ) : <></>
+
             return (
                 <TableRow>
                     <TableCell className="table-data">{shift.username}</TableCell>
                     <TableCell className="table-data">{shiftStart.toLocaleString()}</TableCell>
-                    {/* <TableCell className="table-data">{`${shiftStart.getMonth()+1}/${shiftStart.getDate()}/${shiftStart.getFullYear()}`}</TableCell> */}
-                    {/* <TableCell className="table-data">{`${shiftStart.hour}:${shiftStart.minute.toString().padStart('2','0')}`}</TableCell> */}
-                    <TableCell className="table-data">{shiftStart.toSQLTime()}</TableCell>
-                    <TableCell className="table-data">{shiftEnd.toSQLTime()}</TableCell>
+                    <TableCell className="table-data">{shiftStart.toLocaleString(DateTime.TIME_SIMPLE)}</TableCell>
+                    <TableCell className="table-data">{shiftEnd.toLocaleString(DateTime.TIME_SIMPLE)}</TableCell>
                     <TableCell className="table-data">{shift.break_length}</TableCell>
                     <TableCell className="table-data">{hoursWorked}</TableCell>
                     <TableCell className="table-data">{shiftCost}</TableCell>
+                    <TableCell>{deleter}</TableCell>
                 </TableRow>
             )
         })
 
         return(
             <div>
-                <Typography variant="h3" my={4} ml={2}>Shift Management</Typography>
+                <Typography variant="h4" my={4} ml={2}>Shift Management</Typography>
                 <Typography variant="h5" my={3} ml={2}>{user.organisation.name}</Typography>
                 <Table className="table-data" sx={{margin: 'auto', width: '90%'}}>
                     <TableHead >
@@ -103,6 +101,7 @@ console.log(shifts)
                             <TableCell className="table-data" sx={{fontWeight: 'bold'}}>Break length (min.)</TableCell>
                             <TableCell className="table-data" sx={{fontWeight: 'bold'}}>Hours worked</TableCell>
                             <TableCell className="table-data" sx={{fontWeight: 'bold'}}>Shift cost</TableCell>
+                            <TableCell>Delete</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -121,9 +120,10 @@ console.log(shifts)
                             <TableCell className="table-data">
                                 <TextField type="number" name="breakLength" value={newShift.breakLength} onChange={handleUpdateNewShift}/>
                             </TableCell>
-                            <TableCell colSpan="2" className="table-data">
+                            <TableCell colSpan="3" className="table-data">
                                 <Button variant="contained" onClick={() => handlePostShift(newShift)}>Create shift</Button>
                             </TableCell>
+                            
                         </TableRow>
                     </TableBody>
                 </Table>

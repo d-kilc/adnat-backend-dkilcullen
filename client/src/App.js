@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react'
 
 import Navbar from './components/Navbar'
 import Signup from './components/Signup'
+import EditProfile from './components/EditProfile'
 import Home from './components/Home'
 import Login from './components/Login'
 import Shifts from './components/Shifts'
-import Edit from './components/Edit'
+import Create from './components/Create'
+import EditOrganisation from './components/EditOrganisation'
 import ForgotPassword from './components/ForgotPassword'
 
 function App() {
@@ -19,12 +21,53 @@ function App() {
 
   function currentUser() {
     fetch('/me')
-    .then((r) => { 
-      if (r.ok) {
-        r.json().then(setUser);
+    .then((res) => { 
+      if (res.ok) {
+        res.json().then(setUser)
       }
       else {
         setUser({name: 'Unauthorized'})
+      }
+    })
+  }
+
+  function handleCreateUser(user) {
+    fetch('/users', { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(user)
+    })
+    .then(res => {
+        if (res.ok) {
+          res.json().then(data => {
+              setUser(data)
+              setLoggedIn(true)
+              alert('Account created!')
+          })
+        } else {
+          res.json().then(data => {
+            alert('There was a problem creating the account: ' + data.errors)
+          })
+        }
+    })
+  }
+
+  function handleUpdateUser(updatedUser) {
+    fetch(`/users/${updatedUser.id}`, {
+      method: 'PATCH',
+      headers: { "Content-Type": "application/json", Accept: 'application/json'},
+      body: JSON.stringify(updatedUser)
+    })
+    .then(res => {
+      if (res.ok) {
+        res.json().then(data => {
+          alert('User details updated successfully.')
+          currentUser()
+        })
+      } else {
+        res.json().then(data => {
+          alert('There was a problem updating the user: ' + data.errors)
+        })
       }
     })
   }
@@ -35,10 +78,18 @@ function App() {
         headers: { 'Content-Type': 'application/json', accept: 'application/json'},
         body: JSON.stringify(data)
     })
-    .then(res => res.json())
-    .then(setUser)
-    .then(() => setLoggedIn(true))
-    .catch(() => alert('There was a problem logging in.'))
+    .then(res => {
+      if (res.ok) {
+        res.json().then(data => {
+          setUser(data)
+          setLoggedIn(true)
+        })
+      } else {
+        res.json().then(data => {
+          alert("Incorrect credentials")
+        })
+      }
+    })
 }
 
   function handleLogOut() {
@@ -46,6 +97,7 @@ function App() {
     .then(res => {
       if (res.ok) {
         res.json().then(setUser)
+        setLoggedIn(false)
       }
     })
   }
@@ -56,13 +108,18 @@ function App() {
         headers: { 'Content-Type': 'application/json', Accept: 'application/json'},
         body: JSON.stringify(user)
       })
-    .then(res => res.json())
-    .then(data => handleLogIn({email: user.email, password: user.password}))
-    .then(() => {
-        // setLoggedIn(true)
-        alert('Password updated!')
-    })
-    .catch(() => alert('There was a problem updating the password.'))   
+    .then(res => {
+      if (res.ok) {
+        res.json().then(data => {
+          alert('Password updated successfully.')
+          handleLogIn({email: user.email, password: user.password})
+        })
+      } else {
+        res.json().then(data => {
+          alert(data.errors)
+        })
+      }
+    })  
 }
 
   function handleCreateOrganisation(org) {
@@ -78,8 +135,7 @@ function App() {
   }
 
   function handleJoinOrganisation(org) {
-    setUser({...user, organisation: org})
-
+console.log(org)
     fetch(`/users/${user.id}`, {
       method: 'PATCH',
       headers: { "Content-Type": "application/json", accept: 'application/json'},
@@ -87,10 +143,15 @@ function App() {
     })
     .then(res => {
       if (res.ok) {
-        alert('Organisation joined successfully.')
-      }
-      else {
-        alert(`There was a problem joining the organisation.`)
+        res.json().then(data => {
+          alert('Organisation joined successfully.')
+          currentUser()
+        })
+      } else {
+        res.json().then(data => {
+          alert('There was a problem joining the organisation: ' + data.errors)
+        })
+      
       }
     })
   }
@@ -113,8 +174,6 @@ function App() {
   }
 
   function handleSaveOrganisation(org) {
-    setUser({ ...user, organisation: org })
-
     fetch(`/organisations/${org.id}`, { 
         method: 'PATCH',
         headers: {"Content-Type": "application/json", Accept: "application/json"},
@@ -122,12 +181,16 @@ function App() {
     })
     .then(res => {
       if (res.ok) {
-        alert('Organisation saved successfully.')
+        res.json().then(data => {
+          setUser({ ...user, organisation: org })
+          alert('Organisation saved successfully.')
+        })
       }
       else {
-        alert('There was a problem updating the organisation.')
+        res.json().then(data => {
+          alert('There was a problem updating the organisation: ' + data.errors)
+        })
       }
-
     })
   }
 
@@ -154,23 +217,48 @@ function App() {
         headers: { "Content-Type": "application/json", Accept: "application/json"},
         body: JSON.stringify(formattedShift)
       })
-      // .then(res => res.json())
-      .then(() => currentUser())
-      .catch(err => alert("There was a problem saving the shift: " + err))
+      .then(res => {
+        if (res.ok) {
+          alert('Shift created!')
+          currentUser()
+        } else {
+          res.json().then(data => alert('There was a problem saving the shift: ' + data.errors))
+        }
+      })
     }
+  }
+
+  function handleDeleteShift(shift) {
+    fetch(`/shifts/${shift.id}`, {method: 'DELETE'})
+    .then(res => {
+      if (res.ok) {
+        res.json().then(data => {
+          alert('Shift deleted!')
+          const shiftIndex = user.shifts.findIndex(s => s.id === shift.id)
+          const userCopy = {...user}
+          userCopy.shifts.splice(shiftIndex, 1)
+          setUser(userCopy)
+        })
+      } else {
+        res.json().then(data => {
+          alert('There was a problem deleting the shift: ' + data.errors)
+        })
+      } 
+    })
   }
 
   return (
     <>
-    
     <Router>
       <Navbar handleLogOut={handleLogOut} user={user}/>
       <Routes>
         <Route path="/login" element={ <Login handleLogIn={handleLogIn} loggedIn={loggedIn}/> }/>
-        <Route path="/signup" element={ <Signup handleSetUser={setUser}/> }/>
+        <Route path="/signup" element={ <Signup handleCreateUser={handleCreateUser} loggedIn={loggedIn}/> }/>
         <Route path="/forgot-password" element={ <ForgotPassword handlePasswordReset={handlePasswordReset} loggedIn={loggedIn}/> }/>
-        <Route path="/edit" element={ <Edit handleSaveOrganisation={handleSaveOrganisation}/>} />
-        <Route path="/shifts" element={ <Shifts user={user} handlePostShift={handlePostShift}/> }/> 
+        <Route path="/edit-profile" element={ <EditProfile user={user} handleUpdateUser={handleUpdateUser}/> }/>
+        <Route path="/create" element={ <Create handleCreateOrganisation={handleCreateOrganisation} /> }/>
+        <Route path="/edit" element={ <EditOrganisation handleSaveOrganisation={handleSaveOrganisation}/>} />
+        <Route path="/shifts" element={ <Shifts user={user} handlePostShift={handlePostShift} handleDeleteShift={handleDeleteShift}/> }/> 
         <Route exact path="/" element={<Home user={user} handleLogOut={handleLogOut} handleCreateOrganisation={handleCreateOrganisation} handleJoinOrganisation={handleJoinOrganisation}
           handleLeaveOrganisation={handleLeaveOrganisation}/>}/>
       </Routes>

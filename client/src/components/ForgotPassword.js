@@ -18,9 +18,9 @@ export default function ForgotPassword({handlePasswordReset, loggedIn}) {
 
     return (
         <Grid container flexDirection="column">
-            <Typography xs={12} mx="auto" my={4} variant="h3">Password Reset</Typography>
+            <Typography xs={12} mx="auto" my={4} variant="h4">Password Reset</Typography>
             <Grid my={1} mx="auto" item xs={12}>
-                <TextField label="Name" name="email" value={formData.email} onChange={handleUpdateForm}/>
+                <TextField label="Email" name="email" value={formData.email} onChange={handleUpdateForm}/>
             </Grid>
             <Grid my={1} mx="auto" item xs={12}>
                 <TextField label="Password" type="password" name="password" value={formData.password} onChange={handleUpdateForm}/>
@@ -28,7 +28,7 @@ export default function ForgotPassword({handlePasswordReset, loggedIn}) {
             <Grid my={1} mx="auto" item xs={12}>
                 <TextField label="Confirm Password" type="password" name="password_confirmation" value={formData.password_confirmation} onChange={handleUpdateForm}/>
             </Grid>
-            <Grid item my={1} mx="auto" item xs={12}>
+            <Grid item my={1} mx="auto" xs={12}>
                 <Button variant="contained" sx={{width: '100px'}} mx="auto" onClick={() => handlePasswordReset(formData)}>Reset</Button>
             </Grid>
             <Grid item xs={12} mx="auto">  
